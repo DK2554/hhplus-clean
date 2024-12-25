@@ -1,9 +1,7 @@
-package io.hhplus.cleanarchitecture.interfaces.lectureEnrollment;
+package io.hhplus.cleanarchitecture.interfaces.user;
 
-import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
-import io.hhplus.cleanarchitecture.domain.lecture.LectureService;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollment;
-import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollmentService;
+import io.hhplus.cleanarchitecture.facade.UserLectureEnrollmentFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +14,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class LectureEnrollmentController {
+public class UserLectureEnrollmentController {
 
-    private final LectureEnrollmentService lectureEnrollmentService;
+    private final UserLectureEnrollmentFacade userLectureEnrollmentFacade;
 
     //사용자의 특상 완료 신청 목록
-    @GetMapping("/lecture/enrollment/user/{id}")
+    @GetMapping("/lectures/enrollments/user/{id}")
     public ResponseEntity<List<LectureEnrollment>> findUserEnrolledLectures(@PathVariable(name = "id") Long userId) {
-        return ResponseEntity.ok(lectureEnrollmentService.findUserEnrolledLectures(userId));
+        return ResponseEntity.ok(userLectureEnrollmentFacade.findUserEnrolledLectures(userId));
     }
 }

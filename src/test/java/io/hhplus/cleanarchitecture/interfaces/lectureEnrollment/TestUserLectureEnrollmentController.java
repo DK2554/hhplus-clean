@@ -4,6 +4,7 @@ import io.hhplus.cleanarchitecture.domain.Instructor.Instructor;
 import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollment;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollmentService;
+import io.hhplus.cleanarchitecture.interfaces.user.UserLectureEnrollmentController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(LectureEnrollmentController.class)
-public class TestLectureEnrollmentController {
+@WebMvcTest(UserLectureEnrollmentController.class)
+public class TestUserLectureEnrollmentController {
 
     @Autowired
     private MockMvc mockMvc;
@@ -29,7 +30,7 @@ public class TestLectureEnrollmentController {
     private LectureEnrollmentService lectureEnrollmentService;
 
     @Test
-    @DisplayName("GET - /api/v1/lecture/enrollment/user/{id} 200K.")
+    @DisplayName("GET - /api/v1/lectures/enrollments/user/{id} 200K.")
     void findUserEnrolledLectures() throws Exception{
 
         //given
