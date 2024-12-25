@@ -1,21 +1,26 @@
-package io.hhplus.cleanarchitecture.interfaces.lectureEnrollment;
+package io.hhplus.cleanarchitecture.interfaces.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.cleanarchitecture.domain.Instructor.Instructor;
 import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollment;
-import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollmentService;
-import io.hhplus.cleanarchitecture.interfaces.user.UserLectureEnrollmentController;
+import io.hhplus.cleanarchitecture.facade.UserLectureEnrollmentFacade;
+import io.hhplus.cleanarchitecture.interfaces.lectureEnrollment.LectureEnrollmentRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,8 +31,11 @@ public class TestUserLectureEnrollmentController {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper; // Spring Boot의 ObjectMapper Bean 사용
+
     @MockBean
-    private LectureEnrollmentService lectureEnrollmentService;
+    private UserLectureEnrollmentFacade userLectureEnrollmentFacade;
 
     @Test
     @DisplayName("GET - /api/v1/lectures/enrollments/user/{id} 200K.")
@@ -65,7 +73,7 @@ public class TestUserLectureEnrollmentController {
                         .build());
         Long userId = 1L;
         //when
-        when(lectureEnrollmentService.findUserEnrolledLectures(userId)).thenReturn(mockEnrollments);
+        when(userLectureEnrollmentFacade.findUserEnrolledLectures(userId)).thenReturn(mockEnrollments);
         //특강 목록을 조회할거야
         //then
         mockMvc.perform(get("/api/v1/lecture/enrollment/user/{id}", userId))
@@ -78,6 +86,24 @@ public class TestUserLectureEnrollmentController {
                 .andExpect(jsonPath("$[1].lecture.lectureName").value("HanheaFrontEnd"))
                 .andExpect(jsonPath("$[1].instructor.instructorName").value("허재"));
 
+    }
+
+    @Test
+    @DisplayName("POST - /api/v1/lectures/enrollment 200K.")
+    void shouldEnrollInLectureSuccessfully() throws Exception {
+
+        Long userId = 1L;
+        Long lectureId = 100L;
+        //
+        LectureEnrollmentRequest request = new LectureEnrollmentRequest(userId, lectureId, LocalDate.of(2024, 12, 31));
+
+        doNothing().when(userLectureEnrollmentFacade).enrollInLecture(request);
+
+        // When & Then
+        mockMvc.perform(post("/api/v1/lectures/enrollment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
     }
 
 

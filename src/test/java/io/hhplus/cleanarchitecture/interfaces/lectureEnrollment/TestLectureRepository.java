@@ -75,4 +75,41 @@ public class TestLectureRepository {
         assertThat(lectures.get(0).getUser().getUserName()).isEqualTo("임동욱");
     }
 
+    @Test
+    @DisplayName("Repository save 메서드 호출 테스트")
+    void shouldCallSaveMethodOfRepository() {
+        User user = User.builder().userName("임동욱").build();
+        user = entityManager.persist(user); // 저장 후 영속 상태에서 ID 가져오기
+
+        Instructor instructor = Instructor.builder().instructorName("하헌우").build();
+        instructor = entityManager.persist(instructor);
+
+        Lecture backLecture = Lecture.builder()
+                .lectureName("HangHeaBackEnd")
+                .maxCapacity(50L)
+                .currentCapacity(30L)
+                .applicationStartAt(LocalDate.now())
+                .applicationEndAt(LocalDate.now().plusDays(5))
+                .lectureStart(LocalDate.now().atTime(9, 0))
+                .lectureEnd(LocalDate.now().atTime(18, 0))
+                .build();
+        backLecture = entityManager.persist(backLecture);
+
+        LectureEnrollment enrollment = LectureEnrollment.builder()
+                .user(user)
+                .lecture(backLecture)
+                .instructor(instructor)
+                .enrollmentDate(LocalDate.of(2024, 12, 31))
+                .build();
+
+        // When
+        LectureEnrollment savedEnrollment = jpaLectureEnrollmentRepository.save(enrollment);
+
+        // Then
+        assertThat(savedEnrollment.getId()).isNotNull();
+        assertThat(savedEnrollment.getUser().getId()).isEqualTo(user.getId());
+        assertThat(savedEnrollment.getLecture().getId()).isEqualTo(backLecture.getId());
+        assertThat(savedEnrollment.getEnrollmentDate()).isEqualTo(LocalDate.of(2024, 12, 31));
+
+    }
 }
