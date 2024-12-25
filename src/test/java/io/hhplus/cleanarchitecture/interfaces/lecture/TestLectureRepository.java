@@ -1,7 +1,7 @@
 package io.hhplus.cleanarchitecture.interfaces.lecture;
 
 import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
-import io.hhplus.cleanarchitecture.infra.JpaLectureRepository;
+import io.hhplus.cleanarchitecture.infra.lecture.JpaLectureRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

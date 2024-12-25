@@ -3,10 +3,7 @@ package io.hhplus.cleanarchitecture.interfaces.lecture;
 import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
 import io.hhplus.cleanarchitecture.domain.lecture.LectureService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +20,7 @@ public class LectureController {
 
     // 특정 기간의 특강 목록 조회
     @GetMapping("/lectures")
-    public ResponseEntity<List<Lecture>> getLecturesBetwlectureseenDates(@ModelAttribute LectureDateRangeRequest lectureRequest) {
+    public ResponseEntity<List<Lecture>> findLecturesBetweenDates(@ModelAttribute LectureDateRangeRequest lectureRequest) {
         try {
 
             List<Lecture> lectures = lectureService.findLecturesBetweenDates(lectureRequest.getStartDate(), lectureRequest.getEndDate());
@@ -34,4 +31,5 @@ public class LectureController {
             return ResponseEntity.badRequest().build();
         }
     }
+
 }

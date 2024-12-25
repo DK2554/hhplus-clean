@@ -75,4 +75,7 @@ public class TestLectureController {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].lectureName").value("HanheaFrontEnd"));
     }
+
+
+
 }
