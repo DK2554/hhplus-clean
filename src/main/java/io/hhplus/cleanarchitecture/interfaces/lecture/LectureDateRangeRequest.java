@@ -2,13 +2,17 @@ package io.hhplus.cleanarchitecture.interfaces.lecture;
 
 import io.hhplus.cleanarchitecture.HangHeaException;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class LectureDateRangeRequest {
 
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "applicationStartAt must be in yyyy-MM-dd format")
@@ -26,9 +30,9 @@ public class LectureDateRangeRequest {
         this.applicationStartAt = applicationStartAt;
         this.applicationEndAt = applicationEndAt;
 
-        // 검증: 시작일이 종료일보다 이후면 예외
         LocalDate startDate = LocalDate.parse(applicationStartAt);
         LocalDate endDate = LocalDate.parse(applicationEndAt);
+
         if (startDate.isAfter(endDate)) {
             throw new HangHeaException("시작일이 종료일보다 클 수 없습니다.");
         }
@@ -36,6 +40,7 @@ public class LectureDateRangeRequest {
 
     // 날짜 변환 메서드
     public LocalDate getStartDate() {
+        System.out.println(applicationStartAt);
         return LocalDate.parse(applicationStartAt);
     }
 

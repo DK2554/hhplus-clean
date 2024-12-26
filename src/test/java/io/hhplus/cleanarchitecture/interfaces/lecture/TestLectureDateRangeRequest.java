@@ -1,5 +1,6 @@
 package io.hhplus.cleanarchitecture.interfaces.lecture;
 
+import io.hhplus.cleanarchitecture.HangHeaException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class TestLectureDateRangeRequest {
         String endDate = "2024-12-01";    // 종료일
 
         // When & Then: 생성자에서 IllegalArgumentException이 발생해야 함
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(HangHeaException.class, () -> {
             new LectureDateRangeRequest(startDate, endDate);
         });
     }
@@ -23,17 +24,17 @@ public class TestLectureDateRangeRequest {
     @DisplayName("특강신청목록조회 파라미터에서 날짜가 null인 경우 IllegalArgumentException에러 발생")
     public void shouldThrowExceptionWhenStartDateOrEndDateIsNull() {
 
-        // When & Then: 생성자에서 IllegalArgumentException이 발생해야 함
-        assertThrows(IllegalArgumentException.class, () -> {
+        // When & Then: 생성자에서 HangHeaException 발생해야 함
+        assertThrows(HangHeaException.class, () -> {
             new LectureDateRangeRequest(null, "2024-12-10");
         });
 
-        // When & Then: 생성자에서 IllegalArgumentException이 발생해야 함
-        assertThrows(IllegalArgumentException.class, () -> {
+        // When & Then: 생성자에서 HangHeaException 발생해야 함
+        assertThrows(HangHeaException.class, () -> {
             new LectureDateRangeRequest("2024-12-01",null);
         });
-        // When & Then: 생성자에서 IllegalArgumentException이 발생해야 함
-        assertThrows(IllegalArgumentException.class, () -> {
+        // When & Then: 생성자에서 HangHeaException 발생해야 함
+        assertThrows(HangHeaException.class, () -> {
             new LectureDateRangeRequest(null, null);
         });
     }

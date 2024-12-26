@@ -23,8 +23,8 @@ public class LectureController {
     // 특정 기간의 특강 목록 조회
     @GetMapping("/lectures")
     public ResponseEntity<List<Lecture>> findLecturesBetweenDates(@ModelAttribute LectureDateRangeRequest lectureRequest) {
-            List<Lecture> lectures = lectureService.findLecturesBetweenDates(lectureRequest.getStartDate(), lectureRequest.getEndDate());
-            return ResponseEntity.ok(lectures);
+        List<Lecture> lectures = lectureService.findLecturesBetweenDates(lectureRequest.getStartDate(), lectureRequest.getEndDate());
+        return ResponseEntity.ok(lectures);
     }
 
 }
