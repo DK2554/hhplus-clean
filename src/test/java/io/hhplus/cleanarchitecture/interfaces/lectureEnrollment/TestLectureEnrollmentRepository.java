@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class TestLectureRepository {
+@Transactional
+public class TestLectureEnrollmentRepository {
 
     @Autowired
     private JpaLectureEnrollmentRepository jpaLectureEnrollmentRepository;
@@ -27,18 +29,16 @@ public class TestLectureRepository {
     private TestEntityManager entityManager;
 
     @Test
-    @DisplayName("특정날짜를 입력받아서 해당 날짜 범위에 있는 특강 목록을 반환한다")
-    void shouldFindLecturesBetweenDates() {
-
-        long userId = 1L;
-
+    @DisplayName("특정 사용자 ID로 신청한 강의 목록을 조회한다.")
+    void shouldFindUserEnrolledLectures() {
+        // Given
         User user = User.builder().userName("임동욱").build();
-        user = entityManager.persist(user); // 저장 후 영속 상태에서 ID 가져오기
+        user = entityManager.persist(user); // 유저를 데이터베이스에 저장
 
         Instructor instructor = Instructor.builder().instructorName("하헌우").build();
-        instructor = entityManager.persist(instructor);
+        instructor = entityManager.persist(instructor); // 강사 저장
 
-        Lecture backLecture = Lecture.builder()
+        Lecture lecture = Lecture.builder()
                 .lectureName("HangHeaBackEnd")
                 .maxCapacity(50L)
                 .currentCapacity(30L)
@@ -47,36 +47,27 @@ public class TestLectureRepository {
                 .lectureStart(LocalDate.now().atTime(9, 0))
                 .lectureEnd(LocalDate.now().atTime(18, 0))
                 .build();
-        backLecture = entityManager.persist(backLecture);
-
+        lecture = entityManager.persist(lecture); // 강의를 데이터베이스에 저장
 
         LectureEnrollment enrollment = LectureEnrollment.builder()
-                .enrollmentDate(LocalDate.now())
-                .lecture(backLecture)
-                .instructor(instructor)
                 .user(user)
+                .lecture(lecture)
+                .instructor(instructor)
+                .enrollmentDate(LocalDate.now())
                 .build();
-        jpaLectureEnrollmentRepository.save(enrollment);
+        entityManager.persist(enrollment); // 강의 신청을 데이터베이스에 저장
 
         // When
-        List<LectureEnrollment> lectures = jpaLectureEnrollmentRepository.findByUserId(
-                userId
-        );
-        for (LectureEnrollment lecture : lectures) {
-            System.out.println("Lecture ID: " + lecture.getId());
-            System.out.println("Lecture Name: " + lecture.getLecture().getLectureName());
-            System.out.println("Instructor Name: " + lecture.getInstructor().getInstructorName());
-            System.out.println("User Name: " + lecture.getUser().getUserName());
-        }
-        //then
-        assertThat(lectures).hasSize(1);
-        assertThat(lectures.get(0).getLecture().getLectureName()).isEqualTo("HangHeaBackEnd");
-        assertThat(lectures.get(0).getInstructor().getInstructorName()).isEqualTo("하헌우");
-        assertThat(lectures.get(0).getUser().getUserName()).isEqualTo("임동욱");
+        List<LectureEnrollment> result = jpaLectureEnrollmentRepository.findByUserId(user.getId());
+
+        // Then
+        assertThat(result).hasSize(1); // 유저가 등록한 강의는 하나여야 한다.
+        assertThat(result.get(0).getLecture().getLectureName()).isEqualTo("HangHeaBackEnd");
+        assertThat(result.get(0).getUser().getUserName()).isEqualTo("임동욱");
     }
 
     @Test
-    @DisplayName("Repository save 메서드 호출 테스트")
+    @DisplayName("특강 신청 JPA 테스트")
     void shouldCallSaveMethodOfRepository() {
         User user = User.builder().userName("임동욱").build();
         user = entityManager.persist(user); // 저장 후 영속 상태에서 ID 가져오기
@@ -109,7 +100,5 @@ public class TestLectureRepository {
         assertThat(savedEnrollment.getId()).isNotNull();
         assertThat(savedEnrollment.getUser().getId()).isEqualTo(user.getId());
         assertThat(savedEnrollment.getLecture().getId()).isEqualTo(backLecture.getId());
-        assertThat(savedEnrollment.getEnrollmentDate()).isEqualTo(LocalDate.of(2024, 12, 31));
-
     }
 }

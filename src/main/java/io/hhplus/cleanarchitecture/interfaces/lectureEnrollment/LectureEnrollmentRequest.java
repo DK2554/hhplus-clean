@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
+@NoArgsConstructor
 public class LectureEnrollmentRequest {
     private Long userId;       // 신청하는 사용자 ID
     private Long lectureId;    // 신청하려는 특강 ID

@@ -1,6 +1,6 @@
 -- User Table
 CREATE TABLE "user" (
-                      id INT PRIMARY KEY,
+                      id INT PRIMARY KEY AUTO_INCREMENT,
                       user_name VARCHAR NOT NULL,
                       create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                       updated_at TIMESTAMP
@@ -8,7 +8,7 @@ CREATE TABLE "user" (
 
 -- Lecture Table
 CREATE TABLE lecture (
-                         id INT PRIMARY KEY,
+                         id INT PRIMARY KEY AUTO_INCREMENT,
                          lecture_name VARCHAR NOT NULL,
                          max_capacity INT NOT NULL,
                          current_capacity INT DEFAULT 0,
@@ -22,7 +22,7 @@ CREATE TABLE lecture (
 
 -- Instructor Table
 CREATE TABLE instructor (
-                            id INT PRIMARY KEY,
+                            id INT PRIMARY KEY AUTO_INCREMENT,
                             instructor_name VARCHAR NOT NULL,
                             create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP

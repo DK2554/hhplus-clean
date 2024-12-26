@@ -17,4 +17,9 @@ public class ILectureEnrollmentRepository implements LectureEnrollmentRepository
     public List<LectureEnrollment> findUserEnrolledLectures(Long userId) {
         return jpaLectureEnrollmentRepository.findByUserId(userId);
     }
+
+    @Override
+    public void enrollInLecture(LectureEnrollment lectureEnrollment) {
+        jpaLectureEnrollmentRepository.save(lectureEnrollment);
+    }
 }

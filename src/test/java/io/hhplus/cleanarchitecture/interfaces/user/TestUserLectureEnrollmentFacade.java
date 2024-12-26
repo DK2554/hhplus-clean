@@ -6,6 +6,7 @@ import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollmentSer
 import io.hhplus.cleanarchitecture.domain.user.User;
 import io.hhplus.cleanarchitecture.domain.user.UserService;
 import io.hhplus.cleanarchitecture.facade.UserLectureEnrollmentFacade;
+import io.hhplus.cleanarchitecture.interfaces.lectureEnrollment.LectureEnrollmentRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +57,6 @@ public class TestUserLectureEnrollmentFacade {
         // Given
         Long userId = 1L;
         User emptyUser = new User();
-        // Mocking the UserService to throw UserNotFoundException
         when(userService.findByUserId(userId)).thenReturn(emptyUser);
         // When & Then
         HangHeaException exception = assertThrows(
@@ -66,4 +66,38 @@ public class TestUserLectureEnrollmentFacade {
         assertEquals("존재하지 않는 사용자입니다.", exception.getMessage());
     }
 
+    @Test
+    @DisplayName("특강 신청 성공 테스트")
+    void shouldEnrollInLectureSuccessfully() {
+        // Given
+        Long userId = 1L;
+        Long lectureId = 100L;
+        Long instructorId = 90L;
+        LectureEnrollmentRequest request = new LectureEnrollmentRequest(userId, lectureId, instructorId);
+
+        // When
+        userLectureEnrollmentFacade.enrollInLecture(request); // 특강 신청 호출
+
+        // Then
+        verify(lectureEnrollmentService, times(1)).enrollInLecture(any(LectureEnrollment.class));
+    }
+
+    @Test
+    @DisplayName("사용자가 없는 경우 특강 신청 실패 테스트")
+    void shouldThrowExceptionWhenUserNotFound() {
+        // Given
+        Long userId = 99L; // 존재하지 않는 사용자 ID
+        Long lectureId = 100L;
+        Long instructorId = 90L;
+        LectureEnrollmentRequest request = new LectureEnrollmentRequest(userId, lectureId, instructorId);
+
+        // 빈 User 객체를 반환하도록 설정
+        when(userService.findByUserId(userId)).thenReturn(new User());
+        // When & Then
+        HangHeaException exception = assertThrows(
+                HangHeaException.class,
+                () -> userLectureEnrollmentFacade.enrollInLecture(request));
+        //예외 메세지 검증
+        assertEquals("존재하지 않는 사용자입니다.", exception.getMessage());
+    }
 }

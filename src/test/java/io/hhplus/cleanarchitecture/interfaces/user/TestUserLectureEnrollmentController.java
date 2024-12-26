@@ -1,20 +1,25 @@
 package io.hhplus.cleanarchitecture.interfaces.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.cleanarchitecture.domain.Instructor.Instructor;
 import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollment;
 import io.hhplus.cleanarchitecture.facade.UserLectureEnrollmentFacade;
+import io.hhplus.cleanarchitecture.interfaces.lectureEnrollment.LectureEnrollmentRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,6 +29,9 @@ public class TestUserLectureEnrollmentController {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private UserLectureEnrollmentFacade userLectureEnrollmentFacade;
@@ -76,6 +84,25 @@ public class TestUserLectureEnrollmentController {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].lecture.lectureName").value("HanheaFrontEnd"))
                 .andExpect(jsonPath("$[1].instructor.instructorName").value("허재"));
+    }
+
+    @Test
+    @DisplayName("POST - /api/v1/lectures/enrollment 200K.")
+    void shouldEnrollInLectureSuccessfully() throws Exception {
+
+        Long userId = 1L;
+        Long lectureId = 100L;
+        Long instructorId = 99L;
+        //
+        LectureEnrollmentRequest request = new LectureEnrollmentRequest(userId, lectureId, instructorId);
+
+        doNothing().when(userLectureEnrollmentFacade).enrollInLecture(request);
+
+        // When & Then
+        mockMvc.perform(post("/api/v1/lectures/enrollment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
     }
 
 

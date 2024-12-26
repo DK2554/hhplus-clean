@@ -1,5 +1,6 @@
 package io.hhplus.cleanarchitecture.interfaces.lectureEnrollment;
 
+import io.hhplus.cleanarchitecture.domain.Instructor.Instructor;
 import io.hhplus.cleanarchitecture.domain.lecture.Lecture;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollment;
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollmentRepository;
@@ -57,6 +58,30 @@ public class TestLectureEnrollmentService {
         assertThat(enrollments.get(0).getLecture().getLectureName()).isEqualTo("Backend Lecture");
         assertThat(enrollments.get(0).getUser().getUserName()).isEqualTo("임동욱");
         verify(lectureEnrollmentRepository, times(1)).findUserEnrolledLectures(userId);
+    }
+
+    @Test
+    @DisplayName("특강 신청 성공 테스트")
+    void shouldEnrollInLectureSuccessfully() {
+        // Given
+        Long userId = 1L;
+        Long lectureId = 100L;
+        Long instructorId = 90L;
+
+        // LectureEnrollment 객체 생성 (빌더 사용)
+        LectureEnrollment enrollment = LectureEnrollment.builder()
+                .user(User.builder().id(userId).build())  // 사용자 설정
+                .lecture(Lecture.builder().id(lectureId).build())  // 강의 설정
+                .instructor(Instructor.builder().id(instructorId).build())  // 강연자 설정
+                .enrollmentDate(LocalDate.now())  // 특강 신청일 설정
+                .build();
+        // When
+        lectureEnrollmentService.enrollInLecture(enrollment);
+
+        // Then
+        // verify가 정확히 한 번 호출되었는지 확인
+        verify(lectureEnrollmentRepository, times(1)).enrollInLecture(any(LectureEnrollment.class));  // Mocked 객체에서 메서드 호출을 검증
+
     }
 
 

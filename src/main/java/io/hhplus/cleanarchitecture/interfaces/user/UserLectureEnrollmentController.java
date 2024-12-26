@@ -2,12 +2,11 @@ package io.hhplus.cleanarchitecture.interfaces.user;
 
 import io.hhplus.cleanarchitecture.domain.lectureEnrollment.LectureEnrollment;
 import io.hhplus.cleanarchitecture.facade.UserLectureEnrollmentFacade;
+import io.hhplus.cleanarchitecture.interfaces.lectureEnrollment.LectureEnrollmentRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +22,12 @@ public class UserLectureEnrollmentController {
     public ResponseEntity<List<LectureEnrollment>> findUserEnrolledLectures(@PathVariable(name = "id") Long userId) {
         UserLectureEnrollmentFinder request = new UserLectureEnrollmentFinder(userId);//생성자를 사용해 직접반환 생성자에 유효성 검증 로직적용
         return ResponseEntity.ok(userLectureEnrollmentFacade.findUserEnrolledLectures(request.getUserId()));
+    }
+
+    //특강신청청
+    @PostMapping("/lectures/enrollment")
+    public ResponseEntity<List<LectureEnrollment>> enrollInLecture(@RequestBody LectureEnrollmentRequest lectureEnrollmentRequest) {
+        userLectureEnrollmentFacade.enrollInLecture(lectureEnrollmentRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

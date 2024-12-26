@@ -15,4 +15,7 @@ public class LectureEnrollmentService {
         return lectureEnrollmentRepository.findUserEnrolledLectures(userId);
     }
 
+    public void enrollInLecture(LectureEnrollment lectureEnrollment) {
+        lectureEnrollmentRepository.enrollInLecture(lectureEnrollment);
+    }
 }
