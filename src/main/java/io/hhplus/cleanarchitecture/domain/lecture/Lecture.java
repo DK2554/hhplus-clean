@@ -57,4 +57,14 @@ public class Lecture {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public boolean isFull() {
+        return currentCapacity >= maxCapacity;
+    }
+
+    public void incrementCapacity() {
+        if (this.currentCapacity < this.maxCapacity) {
+            this.currentCapacity++;
+        }
+    }
 }
