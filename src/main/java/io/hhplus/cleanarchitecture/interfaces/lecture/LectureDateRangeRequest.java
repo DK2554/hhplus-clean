@@ -1,5 +1,6 @@
 package io.hhplus.cleanarchitecture.interfaces.lecture;
 
+import io.hhplus.cleanarchitecture.HangHeaException;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
@@ -19,7 +20,7 @@ public class LectureDateRangeRequest {
     // 도메인 객체와 결합된 생성자
     public LectureDateRangeRequest(String applicationStartAt, String applicationEndAt) {
         if (applicationStartAt == null || applicationEndAt == null) {
-            throw new IllegalArgumentException("날짜는 null이 될 수 없습니다.");
+            throw new HangHeaException("날짜는 null이 될 수 없습니다.");
         }
 
         this.applicationStartAt = applicationStartAt;
@@ -29,7 +30,7 @@ public class LectureDateRangeRequest {
         LocalDate startDate = LocalDate.parse(applicationStartAt);
         LocalDate endDate = LocalDate.parse(applicationEndAt);
         if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("시작일이 종료일보다 클 수 없습니다.");
+            throw new HangHeaException("시작일이 종료일보다 클 수 없습니다.");
         }
     }
 
