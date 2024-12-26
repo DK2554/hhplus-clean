@@ -8,20 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestLectureDateRangeRequest {
     @Test
-    @DisplayName("특강신청목록조회 파라미터에서 시작일이 종료일보다 나중인경우 IllegalArgumentException에러 발생 ")
+    @DisplayName("특강신청목록조회 파라미터에서 시작일이 종료일보다 나중인경우 HangHeaException 발생 ")
     public void shouldThrowExceptionWhenStartDateIsAfterEndDate() {
         // Given: 시작일이 종료일보다 나중인 경우
         String startDate = "2024-12-10";  // 시작일
         String endDate = "2024-12-01";    // 종료일
 
-        // When & Then: 생성자에서 IllegalArgumentException이 발생해야 함
+        // When & Then: 생성자에서 HangHeaException 발생해야 함
         assertThrows(HangHeaException.class, () -> {
             new LectureDateRangeRequest(startDate, endDate);
         });
     }
 
     @Test
-    @DisplayName("특강신청목록조회 파라미터에서 날짜가 null인 경우 IllegalArgumentException에러 발생")
+    @DisplayName("특강신청목록조회 파라미터에서 날짜가 null인 경우 HangHeaException 발생")
     public void shouldThrowExceptionWhenStartDateOrEndDateIsNull() {
 
         // When & Then: 생성자에서 HangHeaException 발생해야 함
